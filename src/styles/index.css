@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body { @apply bg-background text-foreground antialiased; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2 font-medium shadow-sm transition active:scale-[.98] focus:outline-none focus-visible:ring; }
+  .btn-primary { @apply btn bg-foreground text-white hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring; }
+  .card { @apply rounded-2xl bg-white/70 dark:bg-zinc-900/70 shadow p-6 backdrop-blur; }
+}
