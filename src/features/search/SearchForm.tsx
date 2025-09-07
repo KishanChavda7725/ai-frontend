@@ -2,60 +2,52 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useState } from 'react';
-import { searchGemini } from './api';
-import { SearchResult } from '@/interface/search.interface';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { fetchSearchResult } from './searchSlice';
+import { fetchChats } from './chatSlice';
+import { Loader } from '@/components/common/Loader';
 
 export default function SearchForm() {
   const [query, setQuery] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<SearchResult[]>([]); // Adjust type as needed
+  const dispatch = useAppDispatch();
+  const { results, loading, error, currentChatId } = useAppSelector((state) => state.search);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    // React validation: require at least 1 non-whitespace character
     if (!query.trim()) {
-      setError('Please enter a search query.');
       return;
     }
-    setLoading(true);
     try {
-      const res = await searchGemini({ prompt: query });
-      console.log('Search result:', res);
-      if (res?.data) {
-        setResults((prev) => [...prev, res.data]);
-      } else {
-        setError('No data received. Please try again.');
-      }
-    } catch (err) {
-      setError('Search failed. Please try again.');
-    } finally {
+      // Pass chatId if exists, else only prompt
+      const payload = currentChatId ? { chatId: currentChatId, prompt: query } : { prompt: query };
+      await dispatch(fetchSearchResult(payload));
       setQuery('');
-      setLoading(false);
+      dispatch(fetchChats());
+    } catch {
+      // Error is handled in Redux state
     }
   };
   return (
     <>
       <Card className="h-[350px] overflow-y-auto">
-        {results && results.length ? (
-          <>
-            {results.map((result, idx) => (
-              <div key={result._id || idx} className="flex flex-col gap-4 h-full justify-center">
-                <div className="flex w-full">
-                  <div className="bg-[#f4f4f4] rounded-lg px-3 py-1 text-[16px] text-gray-700 max-w-[60%] ml-auto">
-                    {result.prompt}
-                  </div>
-                </div>
-                <div className="flex w-full">
-                  <div className="px-4 py-2 text-sm mr-auto"></div>
-                  <div dangerouslySetInnerHTML={{ __html: result.result }} />
+        {loading ? (
+          <Loader label="Loading result..." />
+        ) : results && results.length > 0 ? (
+          results.map((result, idx) => (
+            <div key={result._id || idx} className="flex flex-col gap-4 h-full justify-center">
+              <div className="flex w-full">
+                <div className="bg-[#f4f4f4] rounded-lg px-3 py-1 text-[16px] text-gray-700 max-w-[60%] ml-auto">
+                  {result.prompt}
                 </div>
               </div>
-            ))}
-          </>
+              <div className="flex w-full">
+                <div className="px-4 py-2 text-sm mr-auto"></div>
+                <div dangerouslySetInnerHTML={{ __html: result.result }} />
+              </div>
+            </div>
+          ))
         ) : (
-          !loading && <p className="text-gray-500">No results yet.</p>
+          <p className="text-gray-500">No results yet.</p>
         )}
       </Card>
       <Card>

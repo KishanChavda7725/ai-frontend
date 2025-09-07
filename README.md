@@ -4,8 +4,6 @@ A modern project scaffold with an opinionated but flexible structure:
 
 - Vite + React 18 + TypeScript
 - React Router v6 (lazy-loaded routes)
-- TanStack Query (server state)
-- Zustand (UI/local state)
 - Axios with interceptors (API layer)
 - Tailwind CSS (utility-first styling + ready-made Button/Card/Input)
 - ESLint + Prettier + strict TS

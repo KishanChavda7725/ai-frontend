@@ -18,6 +18,7 @@ export type SearchGeminiResponse = {
   data: SearchResult;
 };
 export interface SearchRequest {
+  chatId?: string;
   prompt: string;
 }
 
