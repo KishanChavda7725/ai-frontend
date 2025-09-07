@@ -32,6 +32,7 @@ const ChatList = () => {
           <div
             className="px-4 py-3 flex items-center gap-2 text-zinc-700 font-medium cursor-pointer hover:bg-gray-50 rounded-lg"
             onClick={handleNewChat}
+            onTouchEnd={handleNewChat}
           >
             <Edit className="w-4 h-4" />
             <span>New Chat</span>
@@ -49,6 +50,7 @@ const ChatList = () => {
                       : 'text-zinc-700 hover:bg-zinc-50'
                   }`}
                 onClick={() => handleChat(chat._id)}
+                onTouchEnd={() => handleChat(chat._id)}
               >
                 {chat.name || 'Untitled Chat'}
               </button>
