@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchSearchResult } from './searchSlice';
 import { fetchChats } from './chatSlice';
 import { Loader } from '@/components/common/Loader';
+import AIResponse from './aiResponse';
 
 export default function SearchForm() {
   const [query, setQuery] = useState('');
@@ -42,7 +43,8 @@ export default function SearchForm() {
               </div>
               <div className="flex w-full">
                 <div className="px-4 py-2 text-sm mr-auto"></div>
-                <div dangerouslySetInnerHTML={{ __html: result.result }} />
+                {/* <div> {result.result}</div> */}
+                <AIResponse content={result.result} />
               </div>
             </div>
           ))
